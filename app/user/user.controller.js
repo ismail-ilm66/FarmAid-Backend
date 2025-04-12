@@ -45,6 +45,35 @@ exports.signin = async (req, res) => {
   }
 };
 
+exports.googleSignIn = async (req, res) => {
+  const userDatafromReq = ({
+    name,
+    email,
+    contact,
+    fcmToken,
+    language,
+    profilePic,
+  } = req.body);
+  if (!email) {
+    return res.status(400).json({
+      status: false,
+      code: 400,
+      message: "Email is required .",
+    });
+  }
+  try {
+    console.log("before user Data");
+
+    console.log("after user data");
+    const userSignedIn = await userService.googleSignIn(userDatafromReq);
+    return res.status(userSignedIn.code).json(userSignedIn);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ status: false, code: 500, message: error.message });
+  }
+};
+
 exports.deleteAccount = async (req, res) => {
   const { userId } = req.query;
 

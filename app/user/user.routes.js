@@ -9,6 +9,7 @@ const userController = require("./user.controller");
 
 router.post("/signup", upload.single("profilePic"), userController.signup);
 router.post("/signin", upload.none(), userController.signin);
+router.post("/google-signin", upload.none(), userController.googleSignIn);
 router.put(
   "/edit",
   authenticateToken,

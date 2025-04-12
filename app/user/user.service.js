@@ -32,7 +32,7 @@ exports.createAccount = async (userData) => {
   return {
     code: 201,
     status: true,
-    message: "user created successfully",
+    message: "User created successfully",
     user: accountCreated,
   };
 };
@@ -82,6 +82,55 @@ exports.signIn = async ({ email, password, fcmToken }) => {
       email: userExists.email,
     }),
   };
+};
+
+exports.googleSignIn = async (userData) => {
+  const { email } = userData;
+  const userExists = await user.findOne({ where: { email } });
+  console.log(userExists);
+  if (userExists) {
+    if (userExists.signUpMethod === "mail") {
+      return {
+        code: 403,
+        status: false,
+        message:
+          "Your account is associated with mail please sign in using email and password",
+      };
+    }
+    if (userExists.activeStatus === false) {
+      return {
+        code: 403,
+        status: false,
+        message: "This account is deactivated, contact customer support",
+      };
+    }
+    return {
+      code: 200,
+      status: true,
+      message: "User Signed in Successfully",
+      user: userExists,
+      token: helperFunctions.generateToken({
+        userId: userExists.id,
+        email: userExists.email,
+      }),
+    };
+  } else {
+    const accountCreated = await user.create({
+      ...userData,
+      signUpMethod: "google",
+      password: "",
+    });
+    return {
+      code: 201,
+      status: true,
+      message: "User Signed In Successfully ",
+      user: accountCreated,
+      token: helperFunctions.generateToken({
+        userId: accountCreated.id,
+        email: accountCreated.email,
+      }),
+    };
+  }
 };
 
 exports.deleteUserById = async ({ userId }) => {
