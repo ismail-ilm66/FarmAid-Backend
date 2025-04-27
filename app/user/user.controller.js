@@ -46,14 +46,12 @@ exports.signin = async (req, res) => {
 };
 
 exports.googleSignIn = async (req, res) => {
-  const userDatafromReq = ({
-    name,
-    email,
-    contact,
-    fcmToken,
-    language,
-    profilePic,
-  } = req.body);
+  console.log("This is the request body: " + req.body);
+  const userDatafromReq = ({ name, email, fcmToken, language, profilePic } =
+    req.body);
+  console.log(
+    "This is the data from the request body:" + userDatafromReq.email
+  );
   if (!email) {
     return res.status(400).json({
       status: false,
